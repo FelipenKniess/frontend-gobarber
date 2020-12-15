@@ -5,7 +5,7 @@ interface CreateAppointmentDTO {
     provider: string;
     date: Date;
 }
-
+// Soc
 class AppointmentsRepository {
 
     private appointments: Appointment[];
