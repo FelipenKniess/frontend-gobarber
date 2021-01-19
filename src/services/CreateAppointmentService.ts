@@ -10,7 +10,6 @@ interface Request {
 /**
  * Dependency Inversion (SOLID)
  */
-
 class CreateAppointmentService {
     private appointmentsRepository: AppointmentRepository;
 
