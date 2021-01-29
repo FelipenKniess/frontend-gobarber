@@ -13,7 +13,7 @@ appointmentsRouter.get('/', async (request, response) => {
     const appointments = await appointmentRepository.find();
 
     return response.json(appointments);
-})
+});
 
 appointmentsRouter.post('/', async (request, response) => {
     try {
