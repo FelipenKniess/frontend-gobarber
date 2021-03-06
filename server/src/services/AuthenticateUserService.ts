@@ -3,12 +3,14 @@ import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 
 import User from '../models/user';
+import AuthConfig from './../config/auth';
+import appError from '../errors/AppError';
 
 interface Request {
     email: string,
     password:string
 }
-
+3
 interface Response {
     user: User,
     token: String
@@ -23,19 +25,20 @@ class AuthenticateUserService {
         })
 
         if(!user){
-            throw new Error('username or password is incorrect');
+            throw new appError('username or password is incorrect');
         }
 
         const validatePassword = await compare(password, user.password);
 
         if(!validatePassword){
-            throw new Error('username or password is incorrect');
+            throw new appError('username or password is incorrect');
         }
 
-        const token = sign({}, 'e60f980b97448930f815ea0b67739c7d', {
-            subject: user.id,
-            expiresIn: '7d',
+        const { secret, expiresIn } = AuthConfig.jwt;
 
+        const token = sign({}, secret, {
+            subject: user.id,
+            expiresIn:expiresIn,
         });
 
         return {
