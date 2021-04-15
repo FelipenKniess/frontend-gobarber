@@ -1,5 +1,5 @@
 ﻿import styled from 'styled-components';
-import signInBackgroundImg from '../../assets/background-signin.png'
+import signUpBackgroundImg from '../../assets/background-signup.png'
 import { shade } from 'polished';
 
 export const Container = styled.div`
@@ -20,7 +20,6 @@ export const Content = styled.div`
     .logo {
         width: 230px;
         height: 134px;
-
     }
 
     form {
@@ -28,7 +27,6 @@ export const Content = styled.div`
         flex-direction: column;
         margin-top: 80px;
         width: 340px;
-
 
         div {
             & + div {
@@ -86,7 +84,7 @@ export const Content = styled.div`
 
 export const Background = styled.div`
     flex: 1;
-    background: url(${signInBackgroundImg}) no-repeat center;
+    background: url(${signUpBackgroundImg}) no-repeat center;
     background-size: cover;
 
 `

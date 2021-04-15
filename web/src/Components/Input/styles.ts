@@ -7,11 +7,6 @@ export const Container = styled.div`
     width: 100%;
     padding: 16px;
 
-
-    & + div {
-        margin-top: 8px;
-    }
-
     svg {
         color: #666360;
         margin-right: 16px;
