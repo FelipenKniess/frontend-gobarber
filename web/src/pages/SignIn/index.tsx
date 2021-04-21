@@ -1,22 +1,57 @@
-import React, {useState, ChangeEvent} from 'react';
+import React, {useState, ChangeEvent, useRef, useCallback, useContext} from 'react';
+import * as Yup from 'yup';
+import { FormHandles } from '@unform/core';
+import { Form } from '@unform/web';
+import { FiLogIn, FiMail, FiLock} from 'react-icons/fi';
+
 import {Container, Content, Background} from './styles';
 import LogoImg from '../../assets/Logo.svg';
-import { FiLogIn, FiMail, FiLock} from 'react-icons/fi';
 import Input from '../../Components/Input';
 import Button from '../../Components/Button';
-import { Form } from '@unform/web';
+import getValidationErrors from '../../utils/getValidationErrors';
+import { AuthContext } from '../../context/AuthContext';
+
+interface SignInFormData {
+    email: string;
+    password: string;
+}
 
 const SignIn:React.FC = () => {
-    function handleSubmit(data: Object): void{
-        console.log(data);
-    }
+
+    const formRef = useRef<FormHandles>(null);
+
+    const { signIn } = useContext(AuthContext);
+    const handleSubmit = useCallback(async (data: SignInFormData) => {
+        try {
+            formRef.current?.setErrors({});
+
+            const schema = Yup.object().shape({
+                email: Yup.string()
+                .email('Digite um e-mail válido')
+                .required('E-mail obrigatório'),
+                password: Yup.string().required('Senha obrigatória')
+            });
+
+             await schema.validate(data, {
+                abortEarly: false,
+            });
+
+            signIn({
+                email: data.email,
+                password: data.password
+            })
+        } catch (err) {
+            const errors = getValidationErrors(err);
+            formRef.current?.setErrors(errors);
+        }
+      }, []);
 
     return (
         <Container>
             <Content>
                 <img src={LogoImg} className="logo" alt="Gobarber"/>
 
-                <Form onSubmit={handleSubmit}>
+                <Form ref={formRef} onSubmit={handleSubmit}>
                     <h1>Faça seu login</h1>
 
                     <Input icon={FiMail} name="email" type="email" placeholder="E-mail" />
