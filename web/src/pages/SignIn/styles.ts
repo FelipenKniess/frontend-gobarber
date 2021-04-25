@@ -59,8 +59,6 @@ export const Content = styled.div`
                 color: ${shade(0.2, '#F4EDE8')}
             }
         }
-
-
     }
 
     .create-account {
