@@ -1,41 +1,59 @@
-﻿import React, { createContext, useCallback, useState, useContext } from 'react';
-import api from '../services/api';
+﻿import React, { createContext, useCallback, useContext, useState } from 'react';
+import { uuid } from 'uuidv4';
+
+import ToastContainer from '../Components/ToastContainer';
+
+interface ToastContextData {
+  addToast(message: Omit<ToastMessage, 'id'>): void;
+  removeToast(): void;
+}
+
+export interface ToastMessage {
+  id: string;
+  type: 'success' | 'error' | 'info';
+  title: string;
+  description?: string;
+}
 
 const ToastContext = createContext<ToastContextData>({} as ToastContextData);
 
-interface ToastContextData {
-    addToast(): void;
-    removeToast(): void;
-}
-
-const ToastProvider:React.FC<ToastContextData> =  ({ children }) => {
-
-    const addToast = useCallback(() => {
-        console.log('addToast')
-    }, []);
-
-    const removeToast = useCallback(() => {
-        console.log('removeToast')
-    }, []);
-
-    return (
-        <ToastContext.Provider value={{ addToast, removeToast }}>
-            {{children}}
-        </ToastContext.Provider>
-    )
-
-}
+const ToastProvider: React.FC = ({ children }) => {
+  const [messages, setMessages] = useState<ToastMessage[]>([])
 
 
-function useToast(): ToastContextData {
-    const context = useContext(ToastContext);
+  const addToast = useCallback(({title, type, description}: Omit<ToastMessage, 'id'>) => {
+    const id = uuid();
 
-    if(!context){
-        throw new Error('UseToast must be used within a ToastProvider');
+    const toast = {
+      id,
+      title,
+      type,
+      description
     }
 
-    return context;
+    setMessages((state) => [...state, toast]);
+  }, []);
+
+  const removeToast = useCallback(() => {
+    console.log('removeToast');
+  }, []);
+
+  return (
+    <ToastContext.Provider value={{ addToast, removeToast }}>
+      {children}
+      <ToastContainer messages={messages} />
+    </ToastContext.Provider>
+  );
+};
+
+function useToast(): ToastContextData {
+  const context = useContext(ToastContext);
+
+  if (!context) {
+    throw new Error('useToast must be used within an ToastProvider');
+  }
+
+  return context;
 }
 
-
-export {ToastProvider, useToast}
+export { ToastProvider, useToast };
