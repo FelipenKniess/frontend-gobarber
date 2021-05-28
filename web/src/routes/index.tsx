@@ -1,16 +1,19 @@
 import React from 'react';
-import {Route, Switch, BrowserRouter} from 'react-router-dom';
+import {Switch} from 'react-router-dom';
+
+import Route from './Route';
+
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
+import Dashboard from '../../src/pages/Dashboard'
 
-const Routes = () => {
+const Routes:React.FC = () => {
     return (
-        <BrowserRouter>
-            <Switch>
-                <Route component={SignIn} path="/" exact />
-                <Route component={SignUp} path="/signup" />
-            </Switch>
-        </BrowserRouter>
+        <Switch>
+            <Route component={SignIn} path="/" exact />
+            <Route component={SignUp} path="/signup" />
+            <Route component={Dashboard} path="/dashboard" isPrivate />
+        </Switch>
     )
 }
 

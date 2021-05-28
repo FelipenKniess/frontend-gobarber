@@ -1,4 +1,4 @@
-﻿import styled from 'styled-components';
+﻿import styled, {keyframes} from 'styled-components';
 import signUpBackgroundImg from '../../assets/background-signup.png'
 import { shade } from 'polished';
 
@@ -9,6 +9,7 @@ export const Container = styled.div`
 
 `
 
+
 export const Content = styled.div`
     display: flex;
     flex-direction: column;
@@ -17,9 +18,30 @@ export const Content = styled.div`
     width: 100%;
     max-width: 850px;
 
+`
+
+const appearFromRight = keyframes`
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+`
+
+export const AnimationContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    animation: ${appearFromRight} 1s;
+
     .logo {
         width: 230px;
         height: 134px;
+
     }
 
     form {
@@ -27,6 +49,7 @@ export const Content = styled.div`
         flex-direction: column;
         margin-top: 80px;
         width: 340px;
+
 
         div {
             & + div {
@@ -57,8 +80,6 @@ export const Content = styled.div`
                 color: ${shade(0.2, '#F4EDE8')}
             }
         }
-
-
     }
 
     .create-account {
@@ -79,7 +100,6 @@ export const Content = styled.div`
             margin-right: 16px;
         }
     }
-
 `
 
 export const Background = styled.div`

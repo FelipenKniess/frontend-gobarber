@@ -1,20 +1,31 @@
 ﻿import React, {useCallback, useRef} from 'react';
 import * as Yup from 'yup';
+import api from '../../services/api';
+
+import { useToast } from '../../hooks/toast';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import {FiMail, FiLock, FiUser, FiArrowLeft} from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
-import {Container, Content, Background} from './styles';
+import {Container, Content, Background, AnimationContainer} from './styles';
 import LogoImg from '../../assets/Logo.svg';
 import Input from '../../Components/Input';
 import Button from '../../Components/Button';
 import getValidationErrors from '../../utils/getValidationErrors';
 
+interface SignUpFormData {
+    name: string,
+    email: string,
+    password:string
+}
+
 const SignUp:React.FC = () => {
     const formRef = useRef<FormHandles>(null);
+    const { addToast } = useToast();
+    const history = useHistory();
 
-    const handleSubmit = useCallback(async (data: object) => {
+    const handleSubmit = useCallback(async (data: SignUpFormData) => {
         try {
             formRef.current?.setErrors({});
 
@@ -31,30 +42,51 @@ const SignUp:React.FC = () => {
                 abortEarly: false,
             });
 
+            await api.post('/users', data);
+
+            addToast({
+                type: 'success',
+                title: 'Cadastro realizado!',
+                description: 'Você ja pode fazer seu logon no GoBarber!'
+            })
+
+            history.push('/');
+
         } catch (err) {
-            const errors = getValidationErrors(err);
-            formRef.current?.setErrors(errors);
+            if(err instanceof Yup.ValidationError){
+                const errors = getValidationErrors(err);
+                formRef.current?.setErrors(errors);
+                return;
+            }
+
+            addToast({
+                type: 'error',
+                title: 'Erro no cadastro',
+                description: 'Ocorreu um erro cadastro, tente novamente!.'
+            });
         }
-      }, []);
+      }, [addToast, history]);
 
     return (
         <Container>
             <Background />
             <Content>
-                <img src={LogoImg} className="logo" alt="Gobarber"/>
+                <AnimationContainer>
+                    <img src={LogoImg} className="logo" alt="Gobarber"/>
 
-                <Form ref={formRef} onSubmit={handleSubmit}>
-                    <h1>Faça seu cadastro</h1>
+                    <Form ref={formRef} onSubmit={handleSubmit}>
+                        <h1>Faça seu cadastro</h1>
 
-                    <Input name="name" icon={FiUser} placeholder="Nome" />
-                    <Input name="email"icon={FiMail} placeholder="E-mail" />
-                    <Input name="password" icon={FiLock} type="password" placeholder="Senha"/>
-                    <Button type="submit">Cadastrar</Button>
-                </Form>
-                <Link to="/" className="create-account">
-                    < FiArrowLeft />
-                    Voltar para o login
-                </Link>
+                        <Input name="name" icon={FiUser} placeholder="Nome" />
+                        <Input name="email"icon={FiMail} placeholder="E-mail" />
+                        <Input name="password" icon={FiLock} type="password" placeholder="Senha"/>
+                        <Button type="submit">Cadastrar</Button>
+                    </Form>
+                    <Link to="/" className="create-account">
+                        < FiArrowLeft />
+                        Voltar para o login
+                    </Link>
+                </AnimationContainer>
             </Content>
         </Container>
 

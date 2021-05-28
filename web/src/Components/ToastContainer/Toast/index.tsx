@@ -6,6 +6,7 @@ import {ToastMessage, useToast} from '../../../hooks/toast';
 
 interface ToastProps {
     message: ToastMessage;
+    style: Object;
 }
 
 const icons = {
@@ -14,13 +15,13 @@ const icons = {
     success: <FiCheckCircle size={24} />
 }
 
-const Toast: React.FC<ToastProps> = ({ message }) => {
+const Toast: React.FC<ToastProps> = ({ message, style }) => {
     const {removeToast} = useToast();
 
     useEffect(() => {
         const timer = setTimeout(() => {
             removeToast(message.id);
-        }, 2000)
+        }, 3000)
 
         return () => {
             clearTimeout(timer);
@@ -28,15 +29,15 @@ const Toast: React.FC<ToastProps> = ({ message }) => {
     }, [])
 
     return (
-        <Container type={message.type} hasDescription={!!message.description}>
+        <Container type={message.type} hasDescription={!!message.description} style={style}>
             {icons[message.type || 'info' ] }
             <div>
-            <strong>{message.title}</strong>
-            <p>{message.description && message.description}</p>
+                <strong>{message.title}</strong>
+                <p>{message.description && message.description}</p>
             </div>
 
             <button type="button" onClick={() => removeToast(message.id)}>
-            <FiXCircle size={18} />
+                <FiXCircle size={18} />
             </button>
         </Container>
     )
